@@ -1,0 +1,23 @@
+.book-btn {
+    color: var(--clear-color);
+    background: var(--primary-color);
+    opacity: 0.8;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.book-btn:hover {
+    background-color: var(--tertiary-color) !important;
+}
+
+.ant-modal-close-x {
+    padding: 0.5em;
+    border-radius: 10px;
+    background-color: var(--secondary-color);
+}
+
+.ant-modal-close-x:hover {
+    background-color: var(--primary-color);
+}

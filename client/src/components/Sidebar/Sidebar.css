@@ -1,0 +1,68 @@
+.collapse-btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.collapse-btn {
+    background-color: var(--primary-color);
+    font-size: 20px;
+    margin: 1.5rem;
+    padding-inline: 1rem;
+}
+  
+.collapse-btn:hover {
+    background-color: var(--secondary-color) !important;
+    color: var(--clear-color);
+}
+  
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    padding: 10px;
+    gap: 15px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    border-radius: 50%;
+}
+
+.user-name {
+    color: var(--clear-color);
+    font-size: 18px;
+}
+
+.menu {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    font-size: 1rem;
+    background-color: var(--primary-color);
+}
+
+.menu .logout-item {
+    position: absolute;
+    bottom: 15px;
+}
+
+.menu .ant-menu-item, .anticon {
+    color: var(--clear-color);
+}
+
+.menu .ant-menu-item:hover {
+    background-color: var(--clear-color) !important;
+    color: var(--primary-color) !important;
+}
+
+.menu .ant-menu-item-selected {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}

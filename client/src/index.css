@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:wght@400;600&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  --primary-color:rgb(2, 38, 71);
+  --secondary-color: rgb(122, 207, 218);
+  --tertiary-color: rgb(75, 211, 159);
+  --clear-color: rgb(255, 255, 255);
+}
+
+body {
+  height: 100vh;
+}
+
+.content {
+  background-color: var(--clear-color);
+}
+
+.sider {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: 0.5s all;
+  z-index: 2000;
+}
