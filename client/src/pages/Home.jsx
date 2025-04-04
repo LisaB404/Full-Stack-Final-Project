@@ -1,49 +1,49 @@
-import React, { useState } from 'react';
-import { Layout, Button } from 'antd';
-import { PlusCircleOutlined, LoadingOutlined } from '@ant-design/icons';
-import { fetchBooks } from '../hooks/useFetchBooks';
-import Sidebar from '../components/Sidebar/Sidebar';
-import Searchbar from '../components/Searchbar/Searchbar';
-import BookDetails from '../components/BookDetails/BookDetails';
-import { useLibrary } from '../hooks/LibraryContext';
-import './Home.css';
+import React, { useState } from "react";
+import { Layout, Button } from "antd";
+import { PlusCircleOutlined, LoadingOutlined } from "@ant-design/icons";
+import { fetchBooks } from "../hooks/useFetchBooks";
+import Sidebar from "../components/Sidebar/Sidebar";
+import Searchbar from "../components/Searchbar/Searchbar";
+import BookDetails from "../components/BookDetails/BookDetails";
+import { useLibrary } from "../hooks/LibraryContext";
+import "./Home.css";
 
 const { Sider, Content } = Layout;
 
 function Home() {
   const [collapsed, setCollapsed] = useState(false);
-  const [books, setBooks] = useState([]); // Stato per i risultati della ricerca
+  const [books, setBooks] = useState([]); // State for book results
   const [searchMade, setSearchMade] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [startIndex, setStartIndex] = useState(0); // Indice iniziale per l'API
-  const [query, setQuery] = useState(""); // Memorizza l'ultima ricerca
-  const [hasMore, setHasMore] = useState(true); // Stato per verificare se ci sono altri risultati
-  const booksPerPage = 10; // Numero di libri per pagina
+  const [startIndex, setStartIndex] = useState(0); // API initial index
+  const [query, setQuery] = useState(""); // Memorize last search
+  const [hasMore, setHasMore] = useState(true); // Check if there are other results
+  const booksPerPage = 10;
 
-    // Usa il contesto della libreria
-    const { addBook } = useLibrary();
+  // Library context
+  const { addBook } = useLibrary();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-  // Funzione per gestire la ricerca iniziale
+  // Function for initial search
   const handleSearch = async (searchQuery) => {
     setSearchMade(true);
     setIsLoading(true);
-    setQuery(searchQuery);  // Salva la query attuale
-    setStartIndex(0);       // Resetta l'indice per una nuova ricerca
-    setHasMore(true);       // Nuova ricerca: reset di "hasMore"
+    setQuery(searchQuery); // save query
+    setStartIndex(0); // reset index for new search
+    setHasMore(true); // new search: reset hasMore results
     const results = await fetchBooks(searchQuery, 0, booksPerPage);
     setBooks(results);
-    // Se i risultati ottenuti sono inferiori a booksPerPage, non ci sono altri libri da caricare
+    // If there are fewer results than booksPerPage, there are no more books to display
     if (results.length < booksPerPage) {
       setHasMore(false);
     }
     setIsLoading(false);
   };
 
-  // Funzione per caricare la pagina successiva (Load More)
+  // Load more books
   const fetchNextPage = async () => {
     const newStartIndex = startIndex + booksPerPage;
     setIsLoading(true);
@@ -51,7 +51,7 @@ function Home() {
     if (newResults.length === 0) {
       setHasMore(false);
     }
-    setBooks([...books, ...newResults]); // Aggiungi i nuovi risultati senza sovrascrivere quelli esistenti
+    setBooks([...books, ...newResults]); // Add new results to the existing ones
     setStartIndex(newStartIndex);
     setIsLoading(false);
   };
@@ -78,20 +78,24 @@ function Home() {
             <Searchbar onSearch={handleSearch} />
 
             <div className="books-container">
-              {/* Mostra loader se in caricamento */}
+              {/* Display loader */}
               {isLoading && (
                 <div className="loading-container">
-                  <LoadingOutlined className="loading" style={{ fontSize: 24 }} spin />
+                  <LoadingOutlined
+                    className="loading"
+                    style={{ fontSize: 24 }}
+                    spin
+                  />
                   <p>Loading books...</p>
                 </div>
               )}
 
-              {/* Se la ricerca è stata fatta e non ci sono risultati */}
+              {/* Search completed but with no results */}
               {!isLoading && searchMade && books.length === 0 && (
                 <p>Sorry! No book found.</p>
               )}
 
-              {/* Visualizza i libri se ci sono risultati */}
+              {/* Render books found */}
               {!isLoading &&
                 books.length > 0 &&
                 books.map((book) => {
@@ -101,8 +105,7 @@ function Home() {
                     <div key={id} className="book">
                       <img
                         src={
-                          imageLinks?.thumbnail ||
-                          '../assets/img/bookcover.png'
+                          imageLinks?.thumbnail || "../assets/img/bookcover.png"
                         }
                         alt={title}
                       />
@@ -113,22 +116,23 @@ function Home() {
                         </p>
                       </div>
                       <div className="book-btns">
-                      <BookDetails bookId={id} title={title} />
-                        {/* Quando si clicca ADD, aggiungiamo il libro alla libreria */}
+                        <BookDetails bookId={id} title={title} />
+                        {/* Add book to library */}
                         <Button type="primary" onClick={() => addBook(book)}>
                           <PlusCircleOutlined /> Add
-                        </Button>                   
+                        </Button>
                       </div>
                     </div>
                   );
                 })}
             </div>
 
-            {/* Se la ricerca è stata fatta e ci sono risultati */}
             {searchMade && books.length > 0 && (
               <div className="pagination">
                 {hasMore ? (
-                  <Button onClick={fetchNextPage} className='load-btn'>Load More</Button>
+                  <Button onClick={fetchNextPage} className="load-btn">
+                    Load More
+                  </Button>
                 ) : (
                   <p>No more results to show.</p>
                 )}

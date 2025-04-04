@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button } from "antd";
-import { MinusCircleOutlined } from '@ant-design/icons';
-import { useLibrary } from '../hooks/LibraryContext';
-import './Library.css';
-import Sidebar from '../components/Sidebar/Sidebar';
+import { MinusCircleOutlined } from "@ant-design/icons";
+import { useLibrary } from "../hooks/LibraryContext";
+import "./Library.css";
+import Sidebar from "../components/Sidebar/Sidebar";
 import BookDetails from "../components/BookDetails/BookDetails";
-import './Library.css'
+import "./Library.css";
 
-const {Sider, Content} = Layout
+const { Sider, Content } = Layout;
 
 function Library() {
-  // Definiamo lo stato per gestire il collapse del Sidebar
+  // State to handle Sidebar collapse
   const [collapsed, setCollapsed] = useState(false);
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
-  // Recuperiamo la libreria dal contesto
+  // Get library from context
   const { library, fetchLibrary, removeBook } = useLibrary();
 
-  // Effettua la chiamata alla rotta API quando il componente viene montato
+  // API request
   useEffect(() => {
     fetchLibrary();
   }, [fetchLibrary]);
@@ -50,17 +50,16 @@ function Library() {
             ) : (
               <div className="books-container">
                 {library.map((book) => {
-                  // Estraiamo id e volumeInfo dal libro
+                  // Get id and volumeInfo from book
                   const { id, volumeInfo } = book;
-                  // Da volumeInfo estraiamo title, authors e imageLinks
+                  // Extract title, authors e imageLinks
                   const { title, authors, imageLinks } = volumeInfo;
-                  
+
                   return (
                     <div key={id} className="book">
                       <img
                         src={
-                          imageLinks?.thumbnail ||
-                          "../assets/img/bookcover.png"
+                          imageLinks?.thumbnail || "../assets/img/bookcover.png"
                         }
                         alt={title}
                       />
@@ -71,11 +70,11 @@ function Library() {
                         </p>
                       </div>
                       <div className="book-btns">
-                      <BookDetails bookId={id} title={title} />
-                        {/* Quando si clicca ADD, aggiungiamo il libro alla libreria */}
+                        <BookDetails bookId={id} title={title} />
+                        {/* Remove book from library */}
                         <Button type="primary" onClick={() => handleRemove(id)}>
                           <MinusCircleOutlined /> Remove
-                        </Button>                   
+                        </Button>
                       </div>
                     </div>
                   );
@@ -89,5 +88,4 @@ function Library() {
   );
 }
 
-  
-  export default Library
+export default Library;

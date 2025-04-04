@@ -15,12 +15,12 @@ export async function fetchBooks(query, startIndex = 0, maxResults = 10) {
 
 export async function fetchBookDetails(bookId) {
   const apiUrl = `https://www.googleapis.com/books/v1/volumes/${bookId}`;
-  
+
   try {
-      const response = await axios.get(apiUrl);
-      return response.data;
+    const response = await axios.get(apiUrl);
+    return response.data;
   } catch (error) {
-      console.error('Errore nel recupero dei dettagli del libro:', error);
-      throw error;
+    console.error("Errore nel recupero dei dettagli del libro:", error);
+    throw error;
   }
 }

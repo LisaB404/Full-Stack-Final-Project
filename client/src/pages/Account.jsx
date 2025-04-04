@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
-import Sidebar from '../components/Sidebar/Sidebar';
+import Sidebar from "../components/Sidebar/Sidebar";
 
-const {Sider, Content} = Layout
+const { Sider, Content } = Layout;
 
 function Account() {
-
   const [collapsed, setCollapsed] = useState(false);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-    return (
+  return (
     <Layout>
-      <Sider 
-        className="sider" collapsed={collapsed} collapsible trigger={null} width={180} collapsedWidth={60}>
+      <Sider
+        className="sider"
+        collapsed={collapsed}
+        collapsible
+        trigger={null}
+        width={180}
+        collapsedWidth={60}
+      >
         <Sidebar collapsed={collapsed} toggleCollapsed={toggleCollapsed} />
       </Sider>
       <Layout>
@@ -28,7 +33,7 @@ function Account() {
         </Content>
       </Layout>
     </Layout>
-    )
-  }
-  
-  export default Account
+  );
+}
+
+export default Account;
