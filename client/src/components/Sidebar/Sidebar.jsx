@@ -7,7 +7,29 @@ import useAuth from '../../hooks/useAuth';
 
 function Sidebar({ collapsed, toggleCollapsed }) {
   const { logout } = useAuth();
-  const user = JSON.parse(localStorage.getItem('user'));
+// Funzione per ottenere i dati utente dal localStorage
+const getUser = () => {
+  const token = localStorage.getItem('token'); // Ottieni il token
+  const user = localStorage.getItem('user'); // Ottieni i dati dell'utente da localStorage
+  
+  // Se il token o l'utente non sono presenti, ritorna null
+  if (!token || !user) {
+    return null;
+  }
+
+  try {
+    // Verifica che user non sia undefined o null prima di fare il parsing
+    if (user !== 'undefined' && user !== null) {
+      return JSON.parse(user); // Solo se 'user' è una stringa valida JSON
+    }
+    return null;
+  } catch (error) {
+    console.error('Errore durante il parsing dei dati utente:', error);
+    return null; // Se c'è un errore durante il parsing, ritorna null
+  }
+};
+
+  const user = getUser(); // Ottieni i dati utente
 
   const handleLogout = async () => {
     await logout();

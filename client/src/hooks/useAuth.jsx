@@ -22,6 +22,8 @@ const useAuth = () => {
     try {
       const response = await axios.post("/api/login", formData);
       console.log(response.data);
+      // Salva il token JWT e i dati dell'utente nel localStorage
+      localStorage.setItem("token", "Bearer " + response.data.token);
       // Save user data in local storage
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
@@ -37,7 +39,9 @@ const useAuth = () => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
-    localStorage.removeItem("user");
+    // Rimuovi il token e i dati dell'utente dal localStorage
+    localStorage.removeItem("token");
+    /* localStorage.removeItem("user"); */
     navigate("/login");
   };
 
@@ -45,4 +49,3 @@ const useAuth = () => {
 };
 
 export default useAuth;
-

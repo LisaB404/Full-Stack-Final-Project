@@ -17,7 +17,7 @@ function App() {
     <LibraryProvider>
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/api/login" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home query={query} onSearch={setQuery}/>} />

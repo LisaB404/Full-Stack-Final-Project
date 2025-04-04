@@ -1,10 +1,13 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const { User } = require('./config')
-const session = require('express-session')
+/* const session = require('express-session') */
+
+const jwt = require('jsonwebtoken')
 
 const port = 3000;
 const app = express()
+const SECRET_KEY = process.env.SECRET_KEY
 
 // CORS to manage frontend requests
 const cors = require('cors')
@@ -15,12 +18,24 @@ app.use(express.json()) // convert data into json
 app.use(express.urlencoded({ extended: false })) // pallows access to form data
 
 // Middleware to handle user sessions
-app.use(session({
+/* app.use(session({
     secret: 'your-secret-key', // Cambialo con una chiave più sicura
     resave: false,
     saveUninitialized: false,
     cookie: { secure: false, httpOnly: true } // secure: true se usi HTTPS
-}));
+})); */
+
+// Middleware per autenticazione con JWT
+const authenticateJWT = (req, res, next) => {
+    const token = req.header('Authorization');
+    if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
+
+    jwt.verify(token.split(' ')[1], SECRET_KEY, (err, decoded) => {
+        if (err) return res.status(403).json({ message: 'Invalid token.' });
+        req.userId = decoded.id;
+        next();
+    });
+};
 
 // ==========================
 // API RESTful Routes
@@ -30,18 +45,7 @@ app.use(session({
 app.use(express.static('public'))
 
 
-// homepage you see when you are logged in
-/*  app.get('/', (req, res) => {
-    res.render('home.ejs')
-})  */
-
-
 // SIGNUP ROUTE
-
-/* app.get('/signup', (req, res) => {
-    res.render('signup.ejs')
-}) */
-
 app.post('/api/signup', async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -74,11 +78,6 @@ app.post('/api/signup', async (req, res) => {
 
 
 // LOGIN ROUTE
-
-/* app.get('/login', (req, res) => {
-    res.render('login.ejs')
-}) */
-
 app.post('/api/login', async (req, res) => {
     try {
         const { name, password } = req.body;
@@ -93,9 +92,17 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' });
         } 
         //save user session
-        req.session.user = { id: user._id, name: user.name, email: user.email };
+        /* req.session.user = { id: user._id, name: user.name, email: user.email }; */
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+        //res.json({auth: true, token: token})
 
-        res.status(200).json({ message: 'Login successful', user: req.session.user });
+        // Restituisci il token e i dati dell'utente
+        res.status(200).json({
+            message: 'Login successful',
+            token: token,
+            user: { name: user.name, email: user.email } // Includi i dati dell'utente
+        });
     } catch (error) {
         console.log('Login error:', error);
         res.status(500).json({ message: 'Internal server error' })
@@ -104,13 +111,23 @@ app.post('/api/login', async (req, res) => {
 
 
 // LOGOUT ROUTE
-app.post('/api/logout', (req, res) => {
+/* app.post('/api/logout', (req, res) => {
     req.session.destroy(err => {
         if (err) {
             return res.status(500).json({ message: 'Logout failed' });
         }
         res.status(200).json({ message: 'Logout successful' });
     });
+}); */
+
+// LOGOUT (Client side: elimina il token)
+app.post('/api/logout', (req, res) => {
+    res.status(200).json({ message: 'Logout successful. Remove token on client side.' });
+});
+
+// ROTTA PROTETTA (solo utenti autenticati)
+app.get('/api/protected', authenticateJWT, (req, res) => {
+    res.json({ message: 'Protected data', user: req.user });
 });
 
 
