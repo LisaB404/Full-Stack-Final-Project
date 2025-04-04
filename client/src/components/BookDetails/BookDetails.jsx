@@ -31,7 +31,7 @@ function BookDetails({ bookId, title }) {
     : "Description not available.";
 
   return (
-    <>
+    <div className="details-container">
       <Button type="primary" className="book-btn" onClick={handleOpenModal}>
         <InfoCircleOutlined />
         Details
@@ -46,7 +46,7 @@ function BookDetails({ bookId, title }) {
         {loading && <p>Loading...</p>}
         {!loading && bookDetails && <p className="description">{plainText}</p>}
       </Modal>
-    </>
+    </div>
   );
 }
 

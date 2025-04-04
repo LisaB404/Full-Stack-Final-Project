@@ -21,3 +21,17 @@
 .ant-modal-close-x:hover {
     background-color: var(--primary-color);
 }
+
+
+@media (max-width: 768px) {
+    .details-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ant-modal-content {
+        max-width: 70vw;
+        margin-left: 15%;
+    }
+}

@@ -118,7 +118,7 @@ function Home() {
                       <div className="book-btns">
                         <BookDetails bookId={id} title={title} />
                         {/* Add book to library */}
-                        <Button type="primary" onClick={() => addBook(book)}>
+                        <Button type="primary" className="book-btn" onClick={() => addBook(book)}>
                           <PlusCircleOutlined /> Add
                         </Button>
                       </div>

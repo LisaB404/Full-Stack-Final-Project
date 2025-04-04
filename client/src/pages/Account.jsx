@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Layout } from "antd";
 import Sidebar from "../components/Sidebar/Sidebar";
-
+import './Account.css'
 const { Sider, Content } = Layout;
 
 function Account() {
@@ -25,10 +25,15 @@ function Account() {
       </Sider>
       <Layout>
         <Content className="content">
-          <div className="container">
+          <div className="account-container">
             <h2 className="title">
               <span className="gradient-text">Your Account</span>
             </h2>
+            <div className="account-info">
+            <p>Username: </p>
+            <p>Email: </p>
+            <p>Password: </p>
+            </div>
           </div>
         </Content>
       </Layout>
