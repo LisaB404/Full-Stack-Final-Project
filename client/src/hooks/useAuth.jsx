@@ -23,7 +23,7 @@ const useAuth = () => {
       const response = await axios.post("/api/login", formData);
       console.log(response.data);
       // Salva il token JWT e i dati dell'utente nel localStorage
-      localStorage.setItem("token", "Bearer " + response.data.token);
+      localStorage.setItem("token", response.data.token);
       // Save user data in local storage
       localStorage.setItem('user', JSON.stringify(response.data.user));
       

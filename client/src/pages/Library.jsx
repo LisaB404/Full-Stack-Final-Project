@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { Layout } from "antd";
+import React, { useState, useEffect } from "react";
+import { Layout, Button } from "antd";
+import { MinusCircleOutlined } from '@ant-design/icons';
 import { useLibrary } from '../hooks/LibraryContext';
 import './Library.css';
 import Sidebar from '../components/Sidebar/Sidebar';
+import BookDetails from "../components/BookDetails/BookDetails";
 import './Library.css'
 
 const {Sider, Content} = Layout
@@ -13,7 +15,17 @@ function Library() {
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
   // Recuperiamo la libreria dal contesto
-  const { library } = useLibrary();
+  const { library, fetchLibrary, removeBook } = useLibrary();
+
+  // Effettua la chiamata alla rotta API quando il componente viene montato
+  useEffect(() => {
+    fetchLibrary();
+  }, [fetchLibrary]);
+
+  // To remove books from library
+  const handleRemove = (bookId) => {
+    removeBook(bookId);
+  };
 
   return (
     <Layout>
@@ -42,12 +54,13 @@ function Library() {
                   const { id, volumeInfo } = book;
                   // Da volumeInfo estraiamo title, authors e imageLinks
                   const { title, authors, imageLinks } = volumeInfo;
+                  
                   return (
                     <div key={id} className="book">
                       <img
                         src={
                           imageLinks?.thumbnail ||
-                          "../../public/assets/img/bookcover.png"
+                          "../assets/img/bookcover.png"
                         }
                         alt={title}
                       />
@@ -56,6 +69,13 @@ function Library() {
                         <p className="book-author">
                           {authors ? authors.join(", ") : "Unknown"}
                         </p>
+                      </div>
+                      <div className="book-btns">
+                      <BookDetails bookId={id} title={title} />
+                        {/* Quando si clicca ADD, aggiungiamo il libro alla libreria */}
+                        <Button type="primary" onClick={() => handleRemove(id)}>
+                          <MinusCircleOutlined /> Remove
+                        </Button>                   
                       </div>
                     </div>
                   );

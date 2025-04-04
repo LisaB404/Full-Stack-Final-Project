@@ -1,7 +1,7 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 const { User } = require('./config')
-/* const session = require('express-session') */
+require('dotenv').config();
 
 const jwt = require('jsonwebtoken')
 
@@ -17,21 +17,17 @@ app.use(cors({ origin: "http://localhost:5173" }))
 app.use(express.json()) // convert data into json
 app.use(express.urlencoded({ extended: false })) // pallows access to form data
 
-// Middleware to handle user sessions
-/* app.use(session({
-    secret: 'your-secret-key', // Cambialo con una chiave più sicura
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true } // secure: true se usi HTTPS
-})); */
-
 // Middleware per autenticazione con JWT
 const authenticateJWT = (req, res, next) => {
-    const token = req.header('Authorization');
-    if (!token) return res.status(401).json({ message: 'Access denied. No token provided.' });
+    const authHeader = req.header('Authorization');
+    if (!authHeader) return res.status(401).json({ message: 'Access denied. No token provided.' });
 
-    jwt.verify(token.split(' ')[1], SECRET_KEY, (err, decoded) => {
-        if (err) return res.status(403).json({ message: 'Invalid token.' });
+    const token = authHeader.split(' ')[1];
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if (err) {
+            console.error("Token verification error:", err);
+            return res.status(403).json({ message: 'Invalid token.' });
+        }
         req.userId = decoded.id;
         next();
     });
@@ -49,11 +45,6 @@ app.use(express.static('public'))
 app.post('/api/signup', async (req, res) => {
     try {
         const { name, email, password } = req.body;
-/*     const data = {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
-    } */
     
         //user if user already exists
         const existingUser = await User.findOne({name})
@@ -63,12 +54,11 @@ app.post('/api/signup', async (req, res) => {
         }
         //hash password with bcrypt
         const hashedPassword = await bcrypt.hash(password, 10) //10 standard and secure
-        //password = hashedPassword //replace password with hashed password
 
         //create new user
         const newUser = new User({ name, email, password: hashedPassword });
         await newUser.save();
-        /* await collection.insertMany(data) //send data to database */
+
         return res.status(201).json({ message: 'User created successfully' })
     } catch (error) {
         console.error('Signup error:', error);
@@ -91,17 +81,12 @@ app.post('/api/login', async (req, res) => {
         if(!isPasswordMatch) {
             return res.status(401).json({ message: 'Invalid password' });
         } 
-        //save user session
-        /* req.session.user = { id: user._id, name: user.name, email: user.email }; */
-        // Generate JWT token
-        const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
-        //res.json({auth: true, token: token})
 
-        // Restituisci il token e i dati dell'utente
-        res.status(200).json({
+        const token = jwt.sign({ id: user._id, name: user.name, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+        res.status(200).json({ // Restituisci il token e i dati dell'utente
             message: 'Login successful',
             token: token,
-            user: { name: user.name, email: user.email } // Includi i dati dell'utente
+            user: { name: user.name, email: user.email }
         });
     } catch (error) {
         console.log('Login error:', error);
@@ -109,16 +94,6 @@ app.post('/api/login', async (req, res) => {
     }
 })
 
-
-// LOGOUT ROUTE
-/* app.post('/api/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({ message: 'Logout failed' });
-        }
-        res.status(200).json({ message: 'Logout successful' });
-    });
-}); */
 
 // LOGOUT (Client side: elimina il token)
 app.post('/api/logout', (req, res) => {
@@ -130,6 +105,65 @@ app.get('/api/protected', authenticateJWT, (req, res) => {
     res.json({ message: 'Protected data', user: req.user });
 });
 
+
+// ROUTE TO GET THE LIBRARY
+app.get('/api/library', authenticateJWT, async (req, res) => {
+    try {
+      const user = await User.findById(req.userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      
+      res.json({ library: user.library });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+  
+// ROUTE TO ADD BOOKS
+app.post('/api/library/add', authenticateJWT, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { book } = req.body; // assicurati che il client invii { book: { ... } }
+  
+      // Trova l'utente per ID
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+  
+      // (Opzionale) Verifica se il libro è già presente per evitare duplicati
+      if (user.library.find(b => b.id === book.id)) {
+        return res.status(400).json({ message: 'Book already in library' });
+      }
+  
+      // Aggiungi il libro alla libreria
+      user.library.push(book);
+      await user.save();
+  
+      res.status(200).json({ message: 'Book added successfully', library: user.library });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
+// ROUTE TO REMOVE BOOKS
+app.post('/api/library/remove', authenticateJWT, async (req, res) => {
+    try {
+      const userId = req.userId;
+      const { bookId } = req.body;
+  
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+  
+      // Filtra fuori il libro da rimuovere
+      user.library = user.library.filter(book => book.id !== bookId);
+      await user.save();
+  
+      res.status(200).json({ message: 'Book removed successfully', library: user.library });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`)

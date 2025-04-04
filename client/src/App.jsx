@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import '@ant-design/v5-patch-for-react-19';
 import { LibraryProvider } from './hooks/LibraryContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
