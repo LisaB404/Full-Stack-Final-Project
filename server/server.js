@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const { User } = require("./config");
 require("dotenv").config();
+const Note = require("./noteModel");
 
 const jwt = require("jsonwebtoken");
 
@@ -114,7 +115,6 @@ app.get("/api/protected", authenticateJWT, (req, res) => {
   res.json({ message: "Protected data", user: req.user });
 });
 
-
 // GET USER DATA
 app.get("/api/user", authenticateJWT, async (req, res) => {
   try {
@@ -127,7 +127,6 @@ app.get("/api/user", authenticateJWT, async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 // ROUTE TO CHANGE USER DATAS
 app.put("/api/user", authenticateJWT, async (req, res) => {
@@ -214,13 +213,13 @@ app.post("/api/library/add", authenticateJWT, async (req, res) => {
 app.post("/api/library/remove", authenticateJWT, async (req, res) => {
   try {
     const userId = req.userId;
-    const { bookId } = req.body;
+    const { bookTitle } = req.body;
 
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Filter out book to remove
-    user.library = user.library.filter((book) => book.id !== bookId);
+    user.library = user.library.filter((book) => book.id !== bookTitle);
     await user.save();
 
     res
@@ -229,6 +228,84 @@ app.post("/api/library/remove", authenticateJWT, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// ==========================
+// NOTES ROUTES
+// ==========================
+// CREATE NOTE
+app.post("/api/notes", authenticateJWT, async (req, res) => {
+  try {
+    const { title, text, book } = req.body;
+
+    const note = new Note({
+      title,
+      text,
+      book: book || null,
+      user: req.userId,
+    });
+
+    await note.save();
+    res.status(201).json({ message: "Note created", note });
+  } catch (err) {
+    console.error("Error creating note:", err);
+    res.status(500).json({ error: "Error while saving the note." });
+  }
+});
+
+// GET ALL NOTES FOR CURRENT USER
+app.get("/api/notes", authenticateJWT, async (req, res) => {
+  try {
+    const notes = await Note.find({ user: req.userId }).populate("book");
+    res.json(notes);
+  } catch (err) {
+    console.error("Error fetching notes:", err);
+    res.status(500).json({ error: "Error fetching notes." });
+  }
+});
+
+// UPDATE NOTE
+app.put("/api/notes/:id", authenticateJWT, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, text, book } = req.body;
+
+    const updatedNote = await Note.findOneAndUpdate(
+      { _id: id, user: req.userId }, // sicurezza: solo se è la tua nota
+      { title, text, book: book || null },
+      { new: true }
+    );
+
+    if (!updatedNote) {
+      return res.status(404).json({ message: "Note not found or not yours." });
+    }
+
+    res.json({ message: "Note updated", note: updatedNote });
+  } catch (err) {
+    console.error("Error updating note:", err);
+    res.status(500).json({ error: "Error updating note." });
+  }
+});
+
+// DELETE NOTE
+app.delete("/api/notes/:id", authenticateJWT, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedNote = await Note.findOneAndDelete({
+      _id: id,
+      user: req.userId,
+    });
+
+    if (!deletedNote) {
+      return res.status(404).json({ message: "Note not found or not yours." });
+    }
+
+    res.json({ message: "Note deleted" });
+  } catch (err) {
+    console.error("Error deleting note:", err);
+    res.status(500).json({ error: "Error deleting note." });
   }
 });
 

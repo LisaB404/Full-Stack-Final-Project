@@ -27,7 +27,7 @@ function Account() {
    // Carica i dati utente appena il componente monta
    useEffect(() => {
      axios
-       .get("http://localhost:3000/api/user", {
+       .get("/api/user", {
          headers: { Authorization: `Bearer ${token}` },
        })
        .then((response) => {
@@ -35,7 +35,7 @@ function Account() {
          setFormData({ name, email, password: "" });
        })
        .catch((err) => {
-         console.error("Errore nel recupero dei dati utente:", err);
+         console.error("Error while fetching user data:", err);
        });
    }, [token]);
  
@@ -55,13 +55,13 @@ function Account() {
          headers: { Authorization: `Bearer ${token}` },
        })
        .then((response) => {
-         console.log("Utente aggiornato:", response.data);
+         console.log("User updated successfully:", response.data);
          setEditMode(false);
          // opzionalmente puoi aggiornare lo stato o mostrare un messaggio di successo
        })
        .catch((err) => {
-         console.error("Errore nell'aggiornamento:", err);
-         setError(err.response?.data?.message || "Errore durante l'aggiornamento");
+         console.error("Error while updating:", err);
+         setError(err.response?.data?.message || "Error while updating");
        });
    };
 
@@ -86,7 +86,7 @@ function Account() {
             {!editMode ? (
               <div className="form-container">
                 <p>
-                  <strong>Nome:</strong> {formData.name}
+                  <strong>Name:</strong> {formData.name}
                 </p>
                 <p>
                   <strong>Email:</strong> {formData.email}
@@ -100,12 +100,11 @@ function Account() {
             ) : (
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="name">Nome:</label>
+                  <label htmlFor="name">Name:</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
-                    placeholder="Inserisci il tuo nome"
                     value={formData.name}
                     onChange={handleChange}
                     required
@@ -117,7 +116,7 @@ function Account() {
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Inserisci la tua email"
+                    placeholder="Email"
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -129,7 +128,7 @@ function Account() {
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="Inserisci una nuova password"
+                    placeholder="New password"
                     value={formData.password}
                     onChange={handleChange}
                     required
