@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     margin: 60px 170px 60px 190px;
     min-height: 80vh;
@@ -10,9 +10,73 @@
     gap: 1rem;
 }
 
-.account-info{
-    display: flex;
+.form-container {
+    min-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+    font-size: 18px;
+    line-height: 3rem;
+}
+
+.change-btn {
+margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    min-width: 300px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid var(--primary-color);
+    border-radius: 3px;
+}
+
+.submit-btn, .change-btn, .cancel-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.submit-btn:hover, .change-btn:hover, .cancel-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.cancel-btn {
+    margin-top: 0.5em;
+}
+
+.form-text {
+    margin-top: 15px;
+}
+
+@media (max-width: 768px) {
+    .account-container {
+    margin: 50px 50px;
+    padding: 0 10px;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  }
+
+  .title {
+    font-size: 2rem;
+    word-break: break-word;
+  }
 }

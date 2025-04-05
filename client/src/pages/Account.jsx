@@ -1,15 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Layout } from "antd";
 import Sidebar from "../components/Sidebar/Sidebar";
 import './Account.css'
+
 const { Sider, Content } = Layout;
 
 function Account() {
   const [collapsed, setCollapsed] = useState(false);
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "", // generalmente non visualizziamo la password esistente per sicurezza, ma la usiamo per aggiornamenti
+  });
+  const [editMode, setEditMode] = useState(false);
+  const [error, setError] = useState(null);
+
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
+
+   // Recupera il token salvato (ad esempio in localStorage)
+   const token = localStorage.getItem("token");
+
+   // Carica i dati utente appena il componente monta
+   useEffect(() => {
+     axios
+       .get("http://localhost:3000/api/user", {
+         headers: { Authorization: `Bearer ${token}` },
+       })
+       .then((response) => {
+         const { name, email } = response.data;
+         setFormData({ name, email, password: "" });
+       })
+       .catch((err) => {
+         console.error("Errore nel recupero dei dati utente:", err);
+       });
+   }, [token]);
+ 
+   // Aggiornamento dello stato per ogni input modificato
+   const handleChange = (e) => {
+     setFormData((prevData) => ({
+       ...prevData,
+       [e.target.name]: e.target.value,
+     }));
+   };
+ 
+   // Gestione della submit del form per aggiornare le info
+   const handleSubmit = (e) => {
+     e.preventDefault();
+     axios
+       .put("/api/user", formData, {
+         headers: { Authorization: `Bearer ${token}` },
+       })
+       .then((response) => {
+         console.log("Utente aggiornato:", response.data);
+         setEditMode(false);
+         // opzionalmente puoi aggiornare lo stato o mostrare un messaggio di successo
+       })
+       .catch((err) => {
+         console.error("Errore nell'aggiornamento:", err);
+         setError(err.response?.data?.message || "Errore durante l'aggiornamento");
+       });
+   };
 
   return (
     <Layout>
@@ -29,11 +83,71 @@ function Account() {
             <h2 className="title">
               <span className="gradient-text">Your Account</span>
             </h2>
-            <div className="account-info">
-            <p>Username: </p>
-            <p>Email: </p>
-            <p>Password: </p>
-            </div>
+            {!editMode ? (
+              <div className="form-container">
+                <p>
+                  <strong>Nome:</strong> {formData.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {formData.email}
+                </p>
+                <p>
+                  <strong>Password:</strong> {"********"}
+                </p>
+                {/* Per motivi di sicurezza non si mostra la password */}
+                <button className="change-btn" onClick={() => setEditMode(true)}>Change</button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="name">Nome:</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Inserisci il tuo nome"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="email">Email:</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Inserisci la tua email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="password">Password:</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Inserisci una nuova password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                {error && <p className="error">{error}</p>}
+                <button type="submit" className="submit-btn">
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setEditMode(false)}
+                >
+                  Cancel
+                </button>
+              </form>
+            )}
           </div>
         </Content>
       </Layout>

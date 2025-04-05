@@ -52,11 +52,9 @@ app.post("/api/signup", async (req, res) => {
     const existingUser = await User.findOne({ name });
 
     if (existingUser) {
-      return res
-        .status(400)
-        .json({
-          message: "User already exists. Please choose another username.",
-        });
+      return res.status(400).json({
+        message: "User already exists. Please choose another username.",
+      });
     }
     //hash password with bcrypt
     const hashedPassword = await bcrypt.hash(password, 10); //10 standard and secure
@@ -115,6 +113,61 @@ app.post("/api/logout", (req, res) => {
 app.get("/api/protected", authenticateJWT, (req, res) => {
   res.json({ message: "Protected data", user: req.user });
 });
+
+
+// GET USER DATA
+app.get("/api/user", authenticateJWT, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("name email");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json(user);
+  } catch (error) {
+    console.error("Get user error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
+// ROUTE TO CHANGE USER DATAS
+app.put("/api/user", authenticateJWT, async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (email) updateFields.email = email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateFields.password = hashedPassword;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { $set: updateFields },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "User updated successfully",
+      user: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// ==========================
+// LIBRARY ROUTES
+// ==========================
 
 // ROUTE TO GET THE LIBRARY
 app.get("/api/library", authenticateJWT, async (req, res) => {
