@@ -72,7 +72,11 @@ function Library() {
                       <div className="book-btns">
                         <BookDetails bookId={id} title={title} />
                         {/* Remove book from library */}
-                        <Button type="primary" className="book-btn" onClick={() => handleRemove(id)}>
+                        <Button
+                          type="primary"
+                          className="book-btn"
+                          onClick={() => handleRemove(id)}
+                        >
                           <MinusCircleOutlined /> Remove
                         </Button>
                       </div>

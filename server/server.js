@@ -1,10 +1,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
-const { User } = require("./config");
 require("dotenv").config();
-const Note = require("./noteModel");
+require('./config'); // connection to DB
+const User = require('./models/userModel');
+const Note = require("./models/noteModel");
 
 const jwt = require("jsonwebtoken");
+const validator = require("validator");
 
 const port = 3000;
 const app = express();
@@ -49,7 +51,12 @@ app.post("/api/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    //user if user already exists
+    // check for valid email
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
+
+    // check if user already exists
     const existingUser = await User.findOne({ name });
 
     if (existingUser) {

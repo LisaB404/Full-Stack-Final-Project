@@ -133,7 +133,7 @@
 }
 
 @media (max-width: 768px) {
-    .home-container {
+  .home-container {
     margin: 40px 50px;
     padding: 0 10px;
     flex-direction: column;
@@ -152,7 +152,8 @@
     width: 100px;
   }
 
-  .book-title, .book-author {
+  .book-title,
+  .book-author {
     font-size: 0.75rem;
   }
 }

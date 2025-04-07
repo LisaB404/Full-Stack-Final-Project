@@ -8,7 +8,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
   const [form, setForm] = useState({ title: "", text: "", bookTitle: "" });
   const [books, setBooks] = useState([]);
 
-  // Recupero e impostazione dei dati iniziali
+  // Fetch initial data
   useEffect(() => {
     setForm({
       title: note?.title || "",
@@ -17,14 +17,14 @@ function NoteForm({ note, onSuccess, onCancel }) {
     });
   }, [note]);
 
-  // Fetch dei libri da libreria
+  // Fetch books from library
   useEffect(() => {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
       const res = await axios.get("/api/library", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Verifica se la risposta contiene il campo 'volumeInfo.title' per ogni libro
+      // Check if response has required data
       setBooks(
         res.data.library.map((book) => ({
           id: book.id,
@@ -37,7 +37,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
     fetchBooks();
   }, []);
 
-  // Gestione dell'invio del form
+  // Handle form submit
   const handleSubmit = async () => {
     const token = localStorage.getItem("token");
 
@@ -45,7 +45,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
 
     try {
       if (note) {
-        // Modifica una nota esistente
+        // Change existing note
         await axios.put(
           `/api/notes/${note._id}`,
           {
@@ -57,7 +57,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
         );
         message.success("Note updated");
       } else {
-        // Crea una nuova nota
+        // Create new note
         await axios.post(
           "/api/notes",
           {
@@ -70,7 +70,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
         message.success("Note created");
       }
 
-      onSuccess(); // Chiudi il form e ricarica la lista
+      onSuccess(); // Close the form and reload
     } catch (err) {
       console.error("Error while saving:", err);
       message.error("Error while saving.");
@@ -94,7 +94,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
       />
       <Select
         placeholder="Connect to book (optional)"
-        value={form.bookTitle || undefined} // Usa l'ID del libro (che è bookTitle) come valore
+        value={form.bookTitle || undefined}
         onChange={(value) => setForm({ ...form, bookTitle: value })}
         allowClear
         style={{ width: "100%", marginBottom: 16 }}
@@ -102,14 +102,13 @@ function NoteForm({ note, onSuccess, onCancel }) {
         {books.map((book) => (
           <Select.Option key={book.id} value={book.id}>
             {" "}
-            {/* Usa l'ID del libro come value */}
-            {book.title} {/* Usa il titolo del libro come label */}
+            {book.title}
           </Select.Option>
         ))}
       </Select>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button type="primary" onClick={handleSubmit}>
+        <Button className="note-btn" type="primary" onClick={onCancel}>Cancel</Button>
+        <Button className="note-btn" type="primary" onClick={handleSubmit}>
           Save
         </Button>
       </div>

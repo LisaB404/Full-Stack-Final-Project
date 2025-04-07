@@ -1,3 +1,15 @@
-.container {
+.note-btn {
+    color: var(--clear-color);
+    background: var(--primary-color);
+    opacity: 0.8;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+    border: none;
+}
     
+.note-btn:hover {
+    background-color: var(--tertiary-color) !important;
+    color: var(--clear-color) !important;
 }

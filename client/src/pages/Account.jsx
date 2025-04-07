@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Layout } from "antd";
 import Sidebar from "../components/Sidebar/Sidebar";
-import './Account.css'
+import "./Account.css";
 
 const { Sider, Content } = Layout;
 
@@ -21,49 +21,49 @@ function Account() {
     setCollapsed(!collapsed);
   };
 
-   // Recupera il token salvato (ad esempio in localStorage)
-   const token = localStorage.getItem("token");
+  // Recupera il token salvato (ad esempio in localStorage)
+  const token = localStorage.getItem("token");
 
-   // Carica i dati utente appena il componente monta
-   useEffect(() => {
-     axios
-       .get("/api/user", {
-         headers: { Authorization: `Bearer ${token}` },
-       })
-       .then((response) => {
-         const { name, email } = response.data;
-         setFormData({ name, email, password: "" });
-       })
-       .catch((err) => {
-         console.error("Error while fetching user data:", err);
-       });
-   }, [token]);
- 
-   // Aggiornamento dello stato per ogni input modificato
-   const handleChange = (e) => {
-     setFormData((prevData) => ({
-       ...prevData,
-       [e.target.name]: e.target.value,
-     }));
-   };
- 
-   // Gestione della submit del form per aggiornare le info
-   const handleSubmit = (e) => {
-     e.preventDefault();
-     axios
-       .put("/api/user", formData, {
-         headers: { Authorization: `Bearer ${token}` },
-       })
-       .then((response) => {
-         console.log("User updated successfully:", response.data);
-         setEditMode(false);
-         // opzionalmente puoi aggiornare lo stato o mostrare un messaggio di successo
-       })
-       .catch((err) => {
-         console.error("Error while updating:", err);
-         setError(err.response?.data?.message || "Error while updating");
-       });
-   };
+  // Carica i dati utente appena il componente monta
+  useEffect(() => {
+    axios
+      .get("/api/user", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        const { name, email } = response.data;
+        setFormData({ name, email, password: "" });
+      })
+      .catch((err) => {
+        console.error("Error while fetching user data:", err);
+      });
+  }, [token]);
+
+  // Aggiornamento dello stato per ogni input modificato
+  const handleChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  // Gestione della submit del form per aggiornare le info
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .put("/api/user", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((response) => {
+        console.log("User updated successfully:", response.data);
+        setEditMode(false);
+        // opzionalmente puoi aggiornare lo stato o mostrare un messaggio di successo
+      })
+      .catch((err) => {
+        console.error("Error while updating:", err);
+        setError(err.response?.data?.message || "Error while updating");
+      });
+  };
 
   return (
     <Layout>
@@ -95,7 +95,12 @@ function Account() {
                   <strong>Password:</strong> {"********"}
                 </p>
                 {/* Per motivi di sicurezza non si mostra la password */}
-                <button className="change-btn" onClick={() => setEditMode(true)}>Change</button>
+                <button
+                  className="change-btn"
+                  onClick={() => setEditMode(true)}
+                >
+                  Change
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit}>

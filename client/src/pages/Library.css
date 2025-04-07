@@ -1,101 +1,101 @@
 .library-container {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 60px 170px 60px 190px;
-    min-height: 80vh;
-    max-width: 90vw;
-    gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 60px 170px 60px 190px;
+  min-height: 80vh;
+  max-width: 90vw;
+  gap: 1rem;
 }
 
 .books-container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
 
 .book {
-    position: relative;
-    border-bottom: 2px solid var(--secondary-color);
-    overflow: hidden;
-    cursor: pointer;
-    width: 140px;
+  position: relative;
+  border-bottom: 2px solid var(--secondary-color);
+  overflow: hidden;
+  cursor: pointer;
+  width: 140px;
 }
 
 .book img {
-    width: 100%;
-    border-radius: 8px;
-    display: block;
+  width: 100%;
+  border-radius: 8px;
+  display: block;
 }
 
-.book-title, .book-author {
-    text-align: center;
-    font-size: 10px;
+.book-title,
+.book-author {
+  text-align: center;
+  font-size: 10px;
 }
 
 .book-title {
-    font-weight: bold;
+  font-weight: bold;
 }
 
-.book::after { 
-    content: "";
-    position: absolute;
-    border-radius: 8px;
-    bottom: -100%;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: var(--secondary-color);
-    opacity: 0.8;
-    transition: bottom 0.5s ease-in-out;
-    z-index: 0;
+.book::after {
+  content: "";
+  position: absolute;
+  border-radius: 8px;
+  bottom: -100%;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--secondary-color);
+  opacity: 0.8;
+  transition: bottom 0.5s ease-in-out;
+  z-index: 0;
 }
 
 .book:hover::after {
-    bottom: 0;
+  bottom: 0;
 }
 
 .book-btns {
-    position: absolute;
-    bottom: 0;
-    height: 100%;
-    width: 100%;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
+  position: absolute;
+  bottom: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .book:hover .book-btns {
-    opacity: 1;
+  opacity: 1;
 }
 
 .book-btn {
-    color: var(--clear-color);
-    background: var(--primary-color);
-    opacity: 0.8;
-    padding: 5px 10px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 14px;
+  color: var(--clear-color);
+  background: var(--primary-color);
+  opacity: 0.8;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
 }
 
 .book-btn:hover {
-    background-color: var(--tertiary-color);
-    color: var (--clear-color);
+  background-color: var(--tertiary-color);
+  color: var (--clear-color);
 }
 
-
 @media (max-width: 768px) {
-    .library-container {
+  .library-container {
     margin: 40px 50px;
     padding: 0 10px;
     flex-direction: column;
@@ -114,7 +114,8 @@
     width: 100px;
   }
 
-  .book-title, .book-author {
+  .book-title,
+  .book-author {
     font-size: 0.75rem;
   }
 }

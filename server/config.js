@@ -12,25 +12,3 @@ mongoose.connect(`mongodb+srv://${MONGO_USERNAME}:${MONGO_KEY}@cluster0.9an9rco.
 .catch((error)=>{
     console.log('Connection failed.', error);
 })
-
-// CREATE SCHEMA
-const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    library: { type: Array, default: [] }
-});
-
-// MODEL CREATION
-const User = mongoose.model('User', userSchema)
-
-module.exports = { User }

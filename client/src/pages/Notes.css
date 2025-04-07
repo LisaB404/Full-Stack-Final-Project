@@ -1,25 +1,68 @@
 .notes-container {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 60px 170px 60px 190px;
-    min-height: 80vh;
-    max-width: 90vw;
-    gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 60px 170px 60px 190px;
+  min-height: 80vh;
+  max-width: 90vw;
+  gap: 1rem;
 }
 
-.note-text, .note-book {
-    font-size: 1rem;
+.note-text,
+.note-book {
+  font-size: 1rem;
 }
 
 .note-book {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
-.book-cover {
-    width: 100px;  /* Imposta la larghezza desiderata */
-    height: auto;  /* Mantiene la proporzione dell'immagine */
-    margin-top: 10px;
+.newnote-btn {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.newnote-btn:hover {
+  background-color: var(--primary-color) !important;
+  color: var(--clear-color) !important;
+}
+
+.edit-btn {
+  margin-right: 12px;
+}
+
+.delete-btn,
+.edit-btn {
+  color: var(--secondary-color);
+  cursor: pointer;
+  background-color: var(--primary-color);
+  padding: 0.5em;
+  border-radius: 10px;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  color: var(--primary-color);
+  background-color: var(--tertiary-color);
+}
+
+@media (max-width: 768px) {
+  .notes-container {
+    margin: 40px 55px;
+    padding: 0 10px;
+    flex-direction: column;
+    flex-wrap: wrap;
   }
+
+  .title {
+    font-size: 2rem;
+    word-break: break-word;
+  }
+
+  .ant-drawer-content-wrapper {
+    width: 90% !important;
+  }
+}

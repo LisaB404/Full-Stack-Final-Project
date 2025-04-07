@@ -4,7 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import Sidebar from "../components/Sidebar/Sidebar";
 import NoteForm from "../components/NoteForm/NoteForm";
-import './Notes.css'
+import "./Notes.css";
 
 const { Sider, Content } = Layout;
 
@@ -31,7 +31,7 @@ function Notes() {
     await axios.delete(`/api/notes/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    message.success("Nota eliminata");
+    message.success("Note deleted.");
     fetchNotes();
   };
 
@@ -74,13 +74,17 @@ function Notes() {
               <h2 className="title">
                 <span className="gradient-text">Your Notes</span>
               </h2>
-              <Button type="primary" onClick={handleNewNote}>
+              <Button
+                className="newnote-btn"
+                type="primary"
+                onClick={handleNewNote}
+              >
                 <PlusOutlined /> New Note
               </Button>
             </div>
 
             <List
-              grid={{ gutter: 16, column: 2 }}
+              grid={{ gutter: 16, column: 2, xs: 1, sm: 1, md: 2, lg: 2 }}
               dataSource={notes}
               renderItem={(note) => (
                 <List.Item>
@@ -89,20 +93,14 @@ function Notes() {
                     extra={
                       <>
                         <EditOutlined
-                          style={{
-                            marginRight: 12,
-                            color: "blue",
-                            cursor: "pointer",
-                          }}
+                          className="edit-btn"
                           onClick={() => handleEditNote(note)}
                         />
                         <Popconfirm
-                          title="Sei sicuro di voler eliminare questa nota?"
+                          title="Do you really want to delete this note?"
                           onConfirm={() => deleteNote(note._id)}
                         >
-                          <DeleteOutlined
-                            style={{ color: "red", cursor: "pointer" }}
-                          />
+                          <DeleteOutlined className="delete-btn" />
                         </Popconfirm>
                       </>
                     }
@@ -110,7 +108,7 @@ function Notes() {
                     <p className="note-text">{note.text}</p>
                     {note.book ? (
                       <p className="note-book">
-                        <strong>Libro:</strong> {note.book.title}
+                        <strong>Book:</strong> {note.book.title}
                       </p>
                     ) : null}
                   </Card>
@@ -120,7 +118,7 @@ function Notes() {
           </div>
 
           <Drawer
-            title={editingNote ? "Modifica Nota" : "Nuova Nota"}
+            title={editingNote ? "Edit Note" : "New Note"}
             open={drawerOpen}
             onClose={() => setDrawerOpen(false)}
             width={480}
