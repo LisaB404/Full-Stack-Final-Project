@@ -63,7 +63,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
           {
             title: form.title,
             text: form.text,
-            bookTitle: form.bookTitle ? form.bookTitle : null,
+            book: selectedBook || null,
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -99,15 +99,17 @@ function NoteForm({ note, onSuccess, onCancel }) {
         allowClear
         style={{ width: "100%", marginBottom: 16 }}
       >
+        <Select.Option value="">-- No book selected --</Select.Option>
         {books.map((book) => (
           <Select.Option key={book.id} value={book.id}>
-            {" "}
-            {book.title}
+            {book.title} {/* Mostra solo il titolo del libro */}
           </Select.Option>
         ))}
       </Select>
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
-        <Button className="note-btn" type="primary" onClick={onCancel}>Cancel</Button>
+        <Button className="note-btn" type="primary" onClick={onCancel}>
+          Cancel
+        </Button>
         <Button className="note-btn" type="primary" onClick={handleSubmit}>
           Save
         </Button>

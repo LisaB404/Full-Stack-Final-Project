@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import { message } from "antd";
 
 const LibraryContext = createContext();
 
@@ -10,7 +11,7 @@ export const LibraryProvider = ({ children }) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("Token mancante, effettua il login.");
+        console.error("Missing token, please login.");
         return;
       }
 
@@ -25,12 +26,14 @@ export const LibraryProvider = ({ children }) => {
 
       const data = await response.json();
       if (response.ok) {
+        message.success("Book added to your Library");
         // Update library with added book
         setLibrary((prev) => [...prev, book]);
       } else {
         console.error(data.message);
       }
     } catch (error) {
+      message.error(error.response?.data?.message || "Error while adding book");
       console.error("Error adding book:", error);
     }
   };
@@ -63,7 +66,7 @@ export const LibraryProvider = ({ children }) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ bookId }),
+        body: JSON.stringify({ bookTitle: bookId }),
       });
 
       const data = await response.json();
@@ -76,6 +79,7 @@ export const LibraryProvider = ({ children }) => {
         console.error(data.message);
       }
     } catch (error) {
+      message.error(error.response?.data?.message || "Error while updating");
       console.error("Error removing book:", error);
     }
   };

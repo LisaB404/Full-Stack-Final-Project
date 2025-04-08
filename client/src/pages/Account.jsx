@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Layout } from "antd";
+import { Layout, message } from "antd";
 import Sidebar from "../components/Sidebar/Sidebar";
 import "./Account.css";
 
@@ -12,7 +12,7 @@ function Account() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "", // generalmente non visualizziamo la password esistente per sicurezza, ma la usiamo per aggiornamenti
+    password: "",
   });
   const [editMode, setEditMode] = useState(false);
   const [error, setError] = useState(null);
@@ -21,10 +21,10 @@ function Account() {
     setCollapsed(!collapsed);
   };
 
-  // Recupera il token salvato (ad esempio in localStorage)
+  // Fetch token
   const token = localStorage.getItem("token");
 
-  // Carica i dati utente appena il componente monta
+  // Load user data
   useEffect(() => {
     axios
       .get("/api/user", {
@@ -34,12 +34,12 @@ function Account() {
         const { name, email } = response.data;
         setFormData({ name, email, password: "" });
       })
-      .catch((err) => {
-        console.error("Error while fetching user data:", err);
+      .catch((error) => {
+        console.error("Error while fetching user data:", error);
       });
   }, [token]);
 
-  // Aggiornamento dello stato per ogni input modificato
+  // Update for every input change
   const handleChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -47,21 +47,20 @@ function Account() {
     }));
   };
 
-  // Gestione della submit del form per aggiornare le info
+  // Handle subit form to update user data
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
       .put("/api/user", formData, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((response) => {
-        console.log("User updated successfully:", response.data);
+      .then(() => {
+        message.success("User updated successfully");
         setEditMode(false);
-        // opzionalmente puoi aggiornare lo stato o mostrare un messaggio di successo
       })
-      .catch((err) => {
-        console.error("Error while updating:", err);
-        setError(err.response?.data?.message || "Error while updating");
+      .catch((error) => {
+        message.error(error.response?.data?.message || "Error while updating");
+        setError(error.response?.data?.message || "Error while updating");
       });
   };
 
@@ -94,7 +93,6 @@ function Account() {
                 <p>
                   <strong>Password:</strong> {"********"}
                 </p>
-                {/* Per motivi di sicurezza non si mostra la password */}
                 <button
                   className="change-btn"
                   onClick={() => setEditMode(true)}

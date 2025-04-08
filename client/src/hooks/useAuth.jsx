@@ -9,8 +9,7 @@ const useAuth = () => {
 
   const signup = async (formData) => {
     try {
-      const response = await axios.post("/api/signup", formData);
-      console.log(response.data);
+      await axios.post("/api/signup", formData);
       setSuccess("Account created successfully!");
       setTimeout(() => navigate("/login"), 2000); // Redirect after registration
     } catch (err) {
@@ -21,7 +20,6 @@ const useAuth = () => {
   const login = async (formData) => {
     try {
       const response = await axios.post("/api/login", formData);
-      console.log(response.data);
       // Save token JWT and user data in localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));

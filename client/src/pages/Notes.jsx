@@ -70,7 +70,7 @@ function Notes() {
       <Layout>
         <Content className="content">
           <div className="notes-container">
-            <div className="header">
+            <div className="notes-header">
               <h2 className="title">
                 <span className="gradient-text">Your Notes</span>
               </h2>
@@ -90,6 +90,7 @@ function Notes() {
                 <List.Item>
                   <Card
                     title={note.title}
+                    style={{ width: "90%", wordWrap: "break-word" }}
                     extra={
                       <>
                         <EditOutlined
