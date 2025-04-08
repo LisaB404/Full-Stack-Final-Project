@@ -4,7 +4,7 @@ require("dotenv").config();
 require("./config"); // connessione al DB
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware for CORS to manage frontend requests
 app.use(cors({ origin: "http://localhost:5173" }));
