@@ -6,6 +6,8 @@ import Sidebar from "../components/Sidebar/Sidebar";
 import NoteForm from "../components/NoteForm/NoteForm";
 import "./Notes.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const { Sider, Content } = Layout;
 
 function Notes() {
@@ -20,7 +22,7 @@ function Notes() {
 
   const fetchNotes = async () => {
     const token = localStorage.getItem("token");
-    const res = await axios.get("/api/notes", {
+    const res = await axios.get(`${BACKEND_URL}/api/notes`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setNotes(res.data);
@@ -28,7 +30,7 @@ function Notes() {
 
   const deleteNote = async (id) => {
     const token = localStorage.getItem("token");
-    await axios.delete(`/api/notes/${id}`, {
+    await axios.delete(`${BACKEND_URL}/api/notes/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     message.success("Note deleted.");

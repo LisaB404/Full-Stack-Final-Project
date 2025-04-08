@@ -4,6 +4,8 @@ import { Input, Button, Select, message } from "antd";
 import axios from "axios";
 import "./NoteForm.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 function NoteForm({ note, onSuccess, onCancel }) {
   const [form, setForm] = useState({ title: "", text: "", bookTitle: "" });
   const [books, setBooks] = useState([]);
@@ -21,7 +23,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
   useEffect(() => {
     const fetchBooks = async () => {
       const token = localStorage.getItem("token");
-      const res = await axios.get("/api/library", {
+      const res = await axios.get(`${BACKEND_URL}/api/library`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       // Check if response has required data
@@ -47,7 +49,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
       if (note) {
         // Change existing note
         await axios.put(
-          `/api/notes/${note._id}`,
+          `${BACKEND_URL}/api/notes/${note._id}`,
           {
             title: form.title,
             text: form.text,
@@ -59,7 +61,7 @@ function NoteForm({ note, onSuccess, onCancel }) {
       } else {
         // Create new note
         await axios.post(
-          "/api/notes",
+          `${BACKEND_URL}/api/notes`,
           {
             title: form.title,
             text: form.text,
