@@ -4,7 +4,7 @@
 This project is a web app made with React for the frontend and NodeJS + MongoDB for the backend. This website is my final project for the start2impact Master in Full Stack Development.
 
 ## 📸 Screenshot
-![https://github.com/LisaB404/Full-Stack-Final-Project/blob/main/TheWonderlandOfBooks.png]
+![TheWonderlandOfBooks](https://github.com/user-attachments/assets/4971bb5c-ed3f-4d1f-a986-74ff6c4ca1d6)
 
 ## 🔗 Link
 https://wonderlandofbooks.netlify.app/
