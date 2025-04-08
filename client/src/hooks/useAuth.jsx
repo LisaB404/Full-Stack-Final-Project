@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const useAuth = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -9,7 +11,7 @@ const useAuth = () => {
 
   const signup = async (formData) => {
     try {
-      await axios.post("/api/signup", formData);
+      await axios.post(`${BACKEND_URL}/api/signup`, formData);
       setSuccess("Account created successfully!");
       setTimeout(() => navigate("/login"), 2000); // Redirect after registration
     } catch (err) {
@@ -19,7 +21,7 @@ const useAuth = () => {
 
   const login = async (formData) => {
     try {
-      const response = await axios.post("/api/login", formData);
+      const response = await axios.post(`${BACKEND_URL}/api/login`, formData);
       // Save token JWT and user data in localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -32,7 +34,7 @@ const useAuth = () => {
 
   const logout = async () => {
     try {
-      await axios.post("/api/logout", {}, { withCredentials: true });
+      await axios.post(`${BACKEND_URL}/api/logout`, {}, { withCredentials: true });
     } catch (error) {
       console.error("Logout failed:", error);
     }
