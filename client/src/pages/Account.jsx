@@ -9,7 +9,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const { Sider, Content } = Layout;
 
 function Account() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
