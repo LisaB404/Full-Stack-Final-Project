@@ -11,7 +11,7 @@ import "./Home.css";
 const { Sider, Content } = Layout;
 
 function Home() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [books, setBooks] = useState([]); // State for book results
   const [searchMade, setSearchMade] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

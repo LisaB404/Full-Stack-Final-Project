@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext } from "react";
 import { message } from "antd";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const LibraryContext = createContext();
 
@@ -15,7 +16,7 @@ export const LibraryProvider = ({ children }) => {
         return;
       }
 
-      const response = await fetch("/api/library/add", {
+      const response = await fetch(`${BACKEND_URL}/api/library/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +42,7 @@ export const LibraryProvider = ({ children }) => {
   const fetchLibrary = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/library", {
+      const response = await fetch(`${BACKEND_URL}/api/library`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -60,7 +61,7 @@ export const LibraryProvider = ({ children }) => {
   const removeBook = async (bookId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/library/remove", {
+      const response = await fetch(`${BACKEND_URL}/api/library/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

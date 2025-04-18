@@ -4,10 +4,27 @@ require("dotenv").config();
 require("./config"); // connessione al DB
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware for CORS to manage frontend requests
-app.use(cors({ origin: "http://localhost:5173" }));
+const allowedOrigins = [
+  "https://wonderlandofbooks.netlify.app",
+  "http://localhost:5173"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
 // Middleware to parse JSON and form data
 app.use(express.json()); // convert data into json
 app.use(express.urlencoded({ extended: false })); // allows access to form data
@@ -27,9 +44,13 @@ app.use("/api", libraryRoutes);
 app.use("/api", notesRoutes);
 
 // Protected Route
-app.get("/api/protected", require("./middleware/authenticateJWT"), (req, res) => {
-  res.json({ message: "Protected data", user: req.userId });
-});
+app.get(
+  "/api/protected",
+  require("./middleware/authenticateJWT"),
+  (req, res) => {
+    res.json({ message: "Protected data", user: req.userId });
+  }
+);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
