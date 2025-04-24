@@ -4,10 +4,10 @@ import '@ant-design/v5-patch-for-react-19';
 import { LibraryProvider } from './hooks/LibraryContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
-import Home from './pages/Home';
-import Library from './pages/Library';
-import Notes from './pages/Notes';
-import Account from './pages/Account';
+import Home from './pages/Home/Home';
+import Library from './pages/Library/Library';
+import Notes from './pages/Notes/Notes';
+import Account from './pages/Account/Account';
 
 function App() {
   

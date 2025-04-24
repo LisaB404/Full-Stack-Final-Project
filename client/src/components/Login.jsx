@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { Alert } from "antd";
 import "./signup-login.css";
 
 function Login() {
-  const { login, error } = useAuth();
+  const { login, error, loading } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     password: "",
@@ -26,6 +27,26 @@ function Login() {
     <div className="container">
       <div className="form-container">
         <h2>Login</h2>
+        
+        {loading && (
+          <Alert
+            message="Logging in..."
+            description="Please wait while we log you in."
+            type="info"
+            showIcon
+            style={{ marginBottom: "1rem" }}
+          />
+        )}
+        {error && (
+          <Alert
+            message="Login failed"
+            description={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: "1rem" }}
+          />
+        )}
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>
@@ -37,6 +58,7 @@ function Login() {
               value={formData.name}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           <div className="form-group">
@@ -49,10 +71,11 @@ function Login() {
               value={formData.password}
               onChange={handleChange}
               required
+              disabled={loading}
             />
           </div>
           {error && <p className="error">{error}</p>}
-          <button type="submit" className="submit-btn">
+          <button type="submit" className="submit-btn" disabled={loading}>
             Login
           </button>
         </form>

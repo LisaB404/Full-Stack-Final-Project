@@ -7,12 +7,24 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Middleware for CORS to manage frontend requests
+const allowedOrigins = [
+  "https://wonderlandofbooks.netlify.app",
+  "http://localhost:5173"
+];
+
 app.use(cors({
-    origin: "https://wonderlandofbooks.netlify.app" || "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
+  origin: function (origin, callback) {
+    // Allow requests with no origin
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+}));
+
 // Middleware to parse JSON and form data
 app.use(express.json()); // convert data into json
 app.use(express.urlencoded({ extended: false })); // allows access to form data
