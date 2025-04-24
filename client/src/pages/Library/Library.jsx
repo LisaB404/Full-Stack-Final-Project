@@ -12,7 +12,7 @@ const { Sider, Content } = Layout;
 
 function Library() {
   // State to handle Sidebar collapse
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
   // Get library from context
