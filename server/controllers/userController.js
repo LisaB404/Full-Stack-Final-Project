@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const BlacklistToken = require("../models/blackListToken");
 const validator = require("validator");
 const User = require("../models/userModel");
 require("dotenv").config();
@@ -70,10 +71,28 @@ const login = async (req, res) => {
 };
 
 // LOGOUT
-const logout = (req, res) => {
-  res
-    .status(200)
-    .json({ message: "Logout successful. Remove token on client side." });
+const logout = async (req, res) => {
+  try {
+    const authHeader = req.header("Authorization");
+    if (!authHeader)
+      return res.status(400).json({ message: "No token provided" });
+
+    const token = authHeader.split(" ")[1];
+    // Decodifica (senza verifica) per estrarre exp
+    const { exp } = jwt.decode(token) || {};
+    if (!exp) return res.status(400).json({ message: "Malformed token" });
+
+    // Converte exp (in secondi) in Date
+    const expiresAt = new Date(exp * 1000);
+
+    // Salva in blacklist
+    await BlacklistToken.create({ token, expiresAt });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (err) {
+    console.error("Logout error:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 // GET USER DATA
