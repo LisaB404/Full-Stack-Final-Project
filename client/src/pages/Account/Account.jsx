@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Layout, message } from "antd";
-import Sidebar from "../components/Sidebar/Sidebar";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import "./Account.css";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;

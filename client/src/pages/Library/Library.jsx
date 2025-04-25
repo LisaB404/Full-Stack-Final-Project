@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button } from "antd";
 import { MinusCircleOutlined } from "@ant-design/icons";
-import { useLibrary } from "../hooks/LibraryContext";
+import { useLibrary } from "../../hooks/LibraryContext";
+import { PacmanLoader } from "react-spinners";
 import "./Library.css";
-import Sidebar from "../components/Sidebar/Sidebar";
-import BookDetails from "../components/BookDetails/BookDetails";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import BookDetails from "../../components/BookDetails/BookDetails";
 import "./Library.css";
 
 const { Sider, Content } = Layout;
@@ -15,7 +16,7 @@ function Library() {
   const toggleCollapsed = () => setCollapsed(!collapsed);
 
   // Get library from context
-  const { library, fetchLibrary, removeBook } = useLibrary();
+  const { library, fetchLibrary, removeBook, loading } = useLibrary();
 
   // API request
   useEffect(() => {
@@ -45,7 +46,11 @@ function Library() {
             <h2 className="title">
               <span className="gradient-text">Your Library</span>
             </h2>
-            {library.length === 0 ? (
+            {loading ? (
+              <div className="spinner-container">
+                <PacmanLoader color="rgb(113, 206, 219)" size={25} />
+              </div>
+            ) : library.length === 0 ? (
               <p>Your library is empty. Add some books from the Home page!</p>
             ) : (
               <div className="books-container">

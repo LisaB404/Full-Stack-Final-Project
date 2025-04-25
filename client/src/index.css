@@ -36,3 +36,9 @@ body {
   transition: 0.5s all;
   z-index: 2000;
 }
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  padding: 0.5em;
+}
