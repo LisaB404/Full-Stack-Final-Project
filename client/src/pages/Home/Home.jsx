@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Layout, Button } from "antd";
 import { PlusCircleOutlined, LoadingOutlined } from "@ant-design/icons";
-import { fetchBooks } from "../hooks/useFetchBooks";
-import Sidebar from "../components/Sidebar/Sidebar";
-import Searchbar from "../components/Searchbar/Searchbar";
-import BookDetails from "../components/BookDetails/BookDetails";
-import { useLibrary } from "../hooks/LibraryContext";
+import { fetchBooks } from "../../hooks/useFetchBooks";
+import Sidebar from "../../components/Sidebar/Sidebar";
+import Searchbar from "../../components/Searchbar/Searchbar";
+import BookDetails from "../../components/BookDetails/BookDetails";
+import { useLibrary } from "../../hooks/LibraryContext";
 import "./Home.css";
 
 const { Sider, Content } = Layout;
 
 function Home() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [books, setBooks] = useState([]); // State for book results
   const [searchMade, setSearchMade] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

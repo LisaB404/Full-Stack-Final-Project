@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import "./signup-login.css";
 import { Alert } from "antd";
+import { PropagateLoader } from "react-spinners";
 
 function Signup() {
-  const { signup, error, success } = useAuth();
+  const { signup, error, success, loading } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,8 +29,17 @@ function Signup() {
     <div className="container">
       <div className="form-container">
         <h2>SignUp</h2>
+
         {success && <Alert message={success} type="success" showIcon />}
         {error && <Alert message={error} type="error" showIcon />}
+
+        {/* Spinner while loading */}
+        {loading && (
+          <div className="spinner-container">
+            <PropagateLoader color="rgb(113, 206, 219)" size={25} />
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>
@@ -67,9 +77,9 @@ function Signup() {
               required
             />
           </div>
-          {error && <p className="error">{error}</p>}
-          <button type="submit" className="submit-btn">
-            SignUp
+          {/* {error && <p className="error">{error}</p>} */}
+          <button type="submit" className="submit-btn" disabled={loading}>
+            {loading ? "Signing up..." : "SignUp"}
           </button>
         </form>
         <p className="form-text">

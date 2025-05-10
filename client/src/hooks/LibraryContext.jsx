@@ -1,10 +1,12 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useCallback } from "react";
 import { message } from "antd";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const LibraryContext = createContext();
 
 export const LibraryProvider = ({ children }) => {
   const [library, setLibrary] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // ADD BOOK TO LIBRARY
   const addBook = async (book) => {
@@ -15,7 +17,7 @@ export const LibraryProvider = ({ children }) => {
         return;
       }
 
-      const response = await fetch("/api/library/add", {
+      const response = await fetch(`${BACKEND_URL}/api/library/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,10 +40,11 @@ export const LibraryProvider = ({ children }) => {
     }
   };
 
-  const fetchLibrary = async () => {
+  const fetchLibrary = useCallback(async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/library", {
+      const response = await fetch(`${BACKEND_URL}/api/library`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -53,14 +56,16 @@ export const LibraryProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Error fetching library:", error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
 
   // REMOVE BOOK FROM LIBRARY
   const removeBook = async (bookId) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("/api/library/remove", {
+      const response = await fetch(`${BACKEND_URL}/api/library/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,6 +76,7 @@ export const LibraryProvider = ({ children }) => {
 
       const data = await response.json();
       if (response.ok) {
+        message.success("Book removed from your Library");
         // Remove book and update local library
         setLibrary((prevLibrary) =>
           prevLibrary.filter((book) => book.id !== bookId)
@@ -86,7 +92,7 @@ export const LibraryProvider = ({ children }) => {
 
   return (
     <LibraryContext.Provider
-      value={{ library, addBook, removeBook, fetchLibrary }}
+      value={{ library, addBook, removeBook, fetchLibrary, loading }}
     >
       {children}
     </LibraryContext.Provider>

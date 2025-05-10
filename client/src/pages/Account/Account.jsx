@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Layout, message } from "antd";
-import Sidebar from "../components/Sidebar/Sidebar";
+import Sidebar from "../../components/Sidebar/Sidebar";
 import "./Account.css";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const { Sider, Content } = Layout;
 
 function Account() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -27,7 +29,7 @@ function Account() {
   // Load user data
   useEffect(() => {
     axios
-      .get("/api/user", {
+      .get(`${BACKEND_URL}/api/user`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
@@ -51,7 +53,7 @@ function Account() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put("/api/user", formData, {
+      .put(`${BACKEND_URL}/api/user`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
